@@ -28,6 +28,7 @@ export function SearchBar({ value, onChange, onSearch, isLoading }: SearchBarPro
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Search Indian laws, sections and legal concepts..."
+        aria-label="Search query"
         className="w-full pl-12 pr-24 py-4 bg-white border border-law-border rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-law-indigo focus:border-law-indigo text-law-text-primary text-base transition-all"
         disabled={isLoading}
       />
@@ -37,6 +38,7 @@ export function SearchBar({ value, onChange, onSearch, isLoading }: SearchBarPro
           onClick={() => {
             onChange('');
           }}
+          aria-label="Clear search"
           className="absolute inset-y-0 right-20 pr-2 flex items-center text-law-text-muted hover:text-law-text-primary"
         >
           <X size={18} />

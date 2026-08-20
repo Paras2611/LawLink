@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DocumentUploader } from '../components/documents/DocumentUploader';
 import { DocumentProgress } from '../components/documents/DocumentProgress';
-import { uploadDocument } from '../lib/documents/documentService';
+import { uploadDocument, analyzeDocument } from '../lib/documents/documentService';
 import { Document } from '../lib/documents/types';
 import { FileText } from 'lucide-react';
 
@@ -16,21 +16,25 @@ export function Documents() {
     setStatus('uploading');
     
     try {
-      // Simulate the processing steps for the demo
-      setTimeout(() => setStatus('extracting'), 1000);
-      setTimeout(() => setStatus('analyzing'), 2500);
-      setTimeout(() => setStatus('finding_law'), 4000);
-      setTimeout(() => setStatus('verifying'), 5500);
-      
+      // Step 1: Upload
       const docId = await uploadDocument(file);
+      setStatus('extracting');
       
-      setStatus('complete');
+      // Step 2: Analyze
+      await analyzeDocument(docId);
+      
+      // Update local visual states to match progress (simulated for UI)
+      setTimeout(() => setStatus('analyzing'), 1000);
+      setTimeout(() => setStatus('finding_law'), 2000);
+      setTimeout(() => setStatus('verifying'), 3000);
+      
       setTimeout(() => {
+        setStatus('complete');
         navigate(`/documents/${docId}`);
-      }, 1000);
+      }, 3500);
       
     } catch (error) {
-      console.error('Upload failed:', error);
+      console.error('Upload or Analysis failed:', error);
       setStatus('failed');
     }
   };

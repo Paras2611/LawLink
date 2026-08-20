@@ -58,7 +58,7 @@ export function LegalSearch() {
         <div className="max-w-6xl mx-auto">
           <div className="mb-6 text-center">
             <h1 className="text-2xl sm:text-3xl font-bold text-law-text-primary mb-2">Legal Research Database</h1>
-            <p className="text-sm text-law-text-secondary">Search verified Indian laws, judgments, and regulations.</p>
+            <p className="text-sm text-law-text-secondary">Search Indian laws, judgments, and regulations.</p>
           </div>
           
           <div className="mb-6">

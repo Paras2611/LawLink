@@ -7,7 +7,10 @@ export function ConfidenceCard({ score, label }: { score: number, label: string 
   if (score < 40) colorClass = 'text-red-600 bg-red-50 border-red-200';
 
   return (
-    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md border ${colorClass} text-xs font-medium`}>
+    <div 
+      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md border ${colorClass} text-xs font-medium`}
+      title="AI confidence score is an internal metric and does not guarantee legal correctness."
+    >
       <Activity size={14} />
       <span>Confidence: {label} ({score}%)</span>
     </div>

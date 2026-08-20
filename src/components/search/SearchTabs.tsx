@@ -22,7 +22,7 @@ export function SearchTabs({ activeTab, onChange }: SearchTabsProps) {
           key={tab.id}
           onClick={() => onChange(tab.id)}
           className={cn(
-            "px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors relative",
+            "px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-law-indigo focus-visible:ring-inset rounded-t",
             activeTab === tab.id 
               ? "text-law-indigo" 
               : "text-law-text-muted hover:text-law-text-primary"

@@ -79,10 +79,10 @@ export function Sidebar({ isMobileOpen, closeMobile }: { isMobileOpen?: boolean;
             </div>
             <span className={cn("text-lg font-bold text-white tracking-widest", isHiddenText && "hidden")}>LAWLINK</span>
           </div>
-          <button onClick={() => setCollapsed(!collapsed)} className="hidden md:flex p-1.5 text-law-text-muted hover:text-white rounded-md hover:bg-white/5 transition-colors">
+          <button aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"} onClick={() => setCollapsed(!collapsed)} className="hidden md:flex p-1.5 text-law-text-muted hover:text-white rounded-md hover:bg-white/5 transition-colors">
             {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
           </button>
-          <button onClick={closeMobile} className="md:hidden p-1.5 text-law-text-muted hover:text-white rounded-md hover:bg-white/5 transition-colors">
+          <button aria-label="Close menu" onClick={closeMobile} className="md:hidden p-1.5 text-law-text-muted hover:text-white rounded-md hover:bg-white/5 transition-colors">
             <X size={20} />
           </button>
         </div>

@@ -5,6 +5,7 @@ import { ChatEvidencePanel } from '../components/chat/ChatEvidencePanel';
 import { ChatMessage } from '../components/chat/ChatMessage';
 import { ChatInput } from '../components/chat/ChatInput';
 import { mockChatHistory, mockProgressStates } from '../lib/chat/mockData';
+import { sendMessage } from '../lib/chat/chatService';
 
 export function Chat() {
   const [input, setInput] = useState('');
@@ -33,7 +34,7 @@ export function Chat() {
     setIsMobileEvidenceOpen(false);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isGenerating) return;
 
@@ -49,33 +50,40 @@ export function Chat() {
     setIsGenerating(true);
     setProgressStateIndex(0);
 
-    // Simulate progress states
+    // Simulate progress states updating while waiting
     let stateIdx = 0;
     const interval = setInterval(() => {
-      stateIdx++;
-      if (stateIdx < mockProgressStates.length) {
-        setProgressStateIndex(stateIdx);
-      } else {
-        clearInterval(interval);
-        // Add fake AI response
-        const aiMsg = {
-          id: (Date.now() + 1).toString(),
-          role: 'assistant',
-          content: 'This is a mock AI response generated based on your query. In a production environment, this would hit the LawLink backend API to stream a verified legal response.',
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          aiData: {
-            answer: 'Based on the provided input, this represents the synthesized legal analysis.',
-            confidence: { score: 85, label: 'High' },
-            verificationStatus: 'verified',
-            sources: [
-              { id: 'mock-src', name: 'Mock Legal Authority', type: 'Database' }
-            ]
-          }
-        };
-        setMessages(prev => [...prev, aiMsg]);
-        setIsGenerating(false);
-      }
+      stateIdx = (stateIdx + 1) % mockProgressStates.length;
+      setProgressStateIndex(stateIdx);
     }, 800);
+
+    try {
+      const response = await sendMessage(input, messages);
+      clearInterval(interval);
+      
+      const aiMsg = {
+        id: (Date.now() + 1).toString(),
+        role: response.role || 'assistant',
+        content: response.content,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        aiData: response.aiData
+      };
+      
+      setMessages(prev => [...prev, aiMsg]);
+    } catch (error) {
+      clearInterval(interval);
+      console.error("Chat API failed:", error);
+      // fallback handled in service, but if total failure
+      const errorMsg = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: 'Sorry, I encountered an error. Please try again.',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages(prev => [...prev, errorMsg]);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const currentSources = messages.filter(m => m.aiData?.sources).pop()?.aiData?.sources;
@@ -110,6 +118,7 @@ export function Chat() {
                   setIsSidebarOpen(!isSidebarOpen);
                 }
               }}
+              aria-label="Toggle chat sidebar"
               className="p-1.5 sm:p-2 text-law-text-muted hover:text-law-indigo hover:bg-law-bg rounded-lg transition-colors"
             >
               {isSidebarOpen ? <PanelLeftClose size={20} className="hidden md:block" /> : <PanelLeft size={20} className="hidden md:block" />}
@@ -135,6 +144,7 @@ export function Chat() {
                   setIsEvidenceOpen(!isEvidenceOpen);
                 }
               }}
+              aria-label="Toggle evidence panel"
               className="p-1.5 sm:p-2 text-law-text-muted hover:text-law-indigo hover:bg-law-bg rounded-lg transition-colors flex items-center gap-2"
             >
               <span className="hidden sm:inline-block text-xs font-medium">Evidence</span>
@@ -273,6 +283,7 @@ export function Chat() {
             <div className="absolute top-4 right-4 z-10">
               <button 
                 onClick={() => setIsMobileEvidenceOpen(false)}
+                aria-label="Close evidence panel"
                 className="p-1.5 bg-white border border-law-border rounded-lg text-law-text-muted hover:text-law-indigo shadow-sm"
               >
                 <PanelRightClose size={16} />

@@ -12,7 +12,7 @@ export function CaseCard({ caseItem }: { caseItem: any }) {
             <span className="text-xs text-law-text-muted font-mono bg-slate-50 px-1 py-0.5 rounded border border-law-border">{caseItem.citation}</span>
           </div>
         </div>
-        {caseItem.verified && <div title="Verified Authority"><CheckCircle2 size={16} className="text-green-600 shrink-0" /></div>}
+        {caseItem.verified && <div title="AI Supported Authority"><CheckCircle2 size={16} className="text-emerald-600 shrink-0" /></div>}
       </div>
       <p className="text-sm text-law-text-secondary mt-2 leading-relaxed">
         {caseItem.relevance}

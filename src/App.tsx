@@ -24,6 +24,8 @@ import { ForgotPassword } from './pages/auth/ForgotPassword';
 import { ResetPassword } from './pages/auth/ResetPassword';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { I18nProvider } from './contexts/I18nContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 const routeTitles: Record<string, string> = {
   '/': 'Dashboard',
@@ -83,10 +85,14 @@ function AppContent() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </BrowserRouter>
+    <ThemeProvider>
+      <I18nProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
+        </BrowserRouter>
+      </I18nProvider>
+    </ThemeProvider>
   );
 }

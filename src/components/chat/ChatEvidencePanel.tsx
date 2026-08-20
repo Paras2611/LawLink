@@ -30,9 +30,9 @@ export function ChatEvidencePanel({ currentSources }: { currentSources?: any[] }
           <BookOpen size={18} className="text-law-indigo" />
           Research Evidence
         </div>
-        <div className="flex items-center gap-1.5 px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-medium border border-green-200">
-          <ShieldCheck size={14} />
-          Verified
+        <div className="flex items-center gap-1.5 px-2 py-1 bg-amber-50 text-amber-700 rounded text-[10px] font-medium border border-amber-200 uppercase tracking-wider">
+          <ShieldCheck size={12} />
+          AI Analysis
         </div>
       </div>
       
@@ -47,16 +47,20 @@ export function ChatEvidencePanel({ currentSources }: { currentSources?: any[] }
         </div>
 
         <div>
-          <h3 className="text-xs font-semibold text-law-text-muted uppercase tracking-wider mb-3">Verification Logs</h3>
+          <h3 className="text-xs font-semibold text-law-text-muted uppercase tracking-wider mb-3">Verification Details</h3>
           <div className="bg-slate-50 border border-law-border rounded-lg p-3 text-xs text-law-text-secondary space-y-2 font-mono">
-            <div className="flex items-center gap-2 text-green-600">
-              <ShieldCheck size={14} />
-              Cross-referenced with Supreme Court database
+            <div className="flex items-start gap-2">
+              <ShieldCheck size={14} className="mt-0.5 text-law-indigo" />
+              <span>
+                <strong>System Note:</strong> Citations are AI-retrieved and may not reflect the complete or most current legal precedent. Always consult primary legal texts or a qualified advocate to verify accuracy.
+              </span>
             </div>
-            <div className="flex items-center gap-2 text-green-600">
-              <ShieldCheck size={14} />
-              Statutory provisions active as of 2026
-            </div>
+            {currentSources.some(s => s.type === 'Database' || s.type === 'mock') && (
+              <div className="flex items-center gap-2 text-amber-600">
+                <ShieldCheck size={14} />
+                Contains demo/mock data (MCA Capstone Demonstration)
+              </div>
+            )}
           </div>
         </div>
       </div>

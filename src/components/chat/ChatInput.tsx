@@ -36,6 +36,7 @@ export function ChatInput({
       >
         <button 
           type="button" 
+          aria-label="Attach document"
           className="p-2.5 text-law-text-muted hover:text-law-indigo hover:bg-law-bg rounded-xl transition-colors shrink-0"
           title="Attach Document"
           disabled={isLoading}
@@ -49,6 +50,7 @@ export function ChatInput({
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Describe your legal question or situation..."
+          aria-label="Describe your legal question"
           className="w-full max-h-[200px] bg-transparent text-sm sm:text-base text-law-text-primary px-3 py-3 focus:outline-none resize-none placeholder:text-law-text-muted"
           rows={1}
           disabled={isLoading}
@@ -58,6 +60,7 @@ export function ChatInput({
           {!value.trim() ? (
             <button 
               type="button" 
+              aria-label="Voice input"
               className="p-2.5 text-law-text-muted hover:text-law-indigo hover:bg-law-bg rounded-xl transition-colors"
               title="Voice Input"
               disabled={isLoading}
@@ -67,6 +70,7 @@ export function ChatInput({
           ) : (
             <button 
               type="submit" 
+              aria-label="Send message"
               disabled={isLoading || !value.trim()}
               className="p-2.5 bg-law-indigo text-white hover:bg-law-navy disabled:bg-slate-300 disabled:text-slate-500 rounded-xl transition-colors shadow-sm"
               title="Send"

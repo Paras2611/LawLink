@@ -20,6 +20,7 @@ export function ContextPanel({ isOpen, onClose }: ContextPanelProps) {
           <h3 className="font-semibold text-law-text-primary text-sm">Context Information</h3>
           <button 
             onClick={onClose} 
+            aria-label="Close context panel"
             className="p-2 text-law-text-muted hover:text-law-text-primary hover:bg-slate-50 rounded-md transition-colors"
           >
             <X size={18} />

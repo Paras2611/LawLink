@@ -36,9 +36,9 @@ export function SearchResultCard({ result }: { result: SearchResult }) {
                 {result.type}
               </span>
               {result.verified && (
-                <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-green-50 text-green-700 border border-green-200" title="Verified Authority">
+                <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200" title="AI Supported Authority">
                   <CheckCircle2 size={12} />
-                  Verified
+                  AI Supported
                 </span>
               )}
               {result.relevance >= 90 && (

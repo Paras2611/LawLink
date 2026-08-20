@@ -76,6 +76,7 @@ export function Dashboard() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Ask LawLink a legal question..."
+            aria-label="Ask LawLink a legal question"
             className="w-full h-14 md:h-16 pl-12 md:pl-14 pr-24 md:pr-36 bg-law-card border border-law-border text-sm md:text-base text-law-text-primary focus:outline-none focus:border-law-indigo focus:ring-1 focus:ring-law-indigo transition-all placeholder:text-law-text-muted"
           />
           <div className="absolute right-1.5 md:right-2 top-1/2 -translate-y-1/2">

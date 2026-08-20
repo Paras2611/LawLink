@@ -85,12 +85,12 @@ export function SavedResearchCard({ item, onDelete, onRename, onArchive, onShare
 
         <div className="flex items-center gap-2 mt-4 pt-4 border-t border-law-border sm:hidden flex-wrap">
            {/* Mobile Actions */}
-           <button onClick={() => {}} className="flex items-center gap-1.5 text-xs font-medium text-law-indigo bg-indigo-50 px-3 py-1.5 rounded-lg">
+           <button onClick={() => {}} className="flex items-center gap-1.5 text-xs font-medium text-law-indigo bg-indigo-50 px-3 py-1.5 rounded-lg" aria-label="Open Item">
              <ExternalLink size={14} /> Open
            </button>
-           <button onClick={() => setIsEditing(true)} className="p-1.5 text-law-text-muted bg-slate-50 rounded-lg"><Edit2 size={14} /></button>
-           <button onClick={() => onShare(item.id)} className="p-1.5 text-law-text-muted bg-slate-50 rounded-lg"><Share2 size={14} /></button>
-           <button onClick={() => setIsDeleting(true)} className="p-1.5 text-law-text-muted bg-slate-50 rounded-lg"><Trash2 size={14} /></button>
+           <button onClick={() => setIsEditing(true)} className="p-1.5 text-law-text-muted bg-slate-50 rounded-lg" aria-label="Rename"><Edit2 size={14} /></button>
+           <button onClick={() => onShare(item.id)} className="p-1.5 text-law-text-muted bg-slate-50 rounded-lg" aria-label="Share"><Share2 size={14} /></button>
+           <button onClick={() => setIsDeleting(true)} className="p-1.5 text-law-text-muted bg-slate-50 rounded-lg" aria-label="Delete"><Trash2 size={14} /></button>
         </div>
       </div>
 

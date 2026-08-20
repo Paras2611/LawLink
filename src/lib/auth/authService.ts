@@ -4,7 +4,8 @@
  * Currently uses mock delays for demonstration.
  */
 
-// Types can be extended based on actual API payload
+import { apiClient } from '../api/client';
+
 export interface User {
   id: string;
   email: string;
@@ -12,63 +13,26 @@ export interface User {
   role: string;
 }
 
-const mockUser: User = {
-  id: '1',
-  email: 'name@firm.com',
-  name: 'Legal Professional',
-  role: 'Administrator',
-};
-
 export const authService = {
   login: async (email: string, password: string):Promise<{user: User, token: string}> => {
-    // Replace with: return axios.post('/api/auth/login', { email, password })
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (email && password) {
-          resolve({ user: mockUser, token: 'mock-jwt-token' });
-        } else {
-          reject(new Error('Invalid credentials'));
-        }
-      }, 1500);
-    });
+    const response = await apiClient.post('/api/auth/login', { email, password });
+    const { token, user } = response.data;
+    localStorage.setItem('auth_token', token);
+    return { user, token };
   },
 
   register: async (name: string, email: string, password: string):Promise<{user: User, token: string}> => {
-    // Replace with: return axios.post('/api/auth/register', { name, email, password })
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (name && email && password) {
-          resolve({ user: { ...mockUser, name, email }, token: 'mock-jwt-token' });
-        } else {
-          reject(new Error('Missing required fields'));
-        }
-      }, 1500);
-    });
+    const response = await apiClient.post('/api/auth/register', { name, email, password });
+    const { token, user } = response.data;
+    localStorage.setItem('auth_token', token);
+    return { user, token };
   },
 
   forgotPassword: async (email: string):Promise<void> => {
-    // Replace with: return axios.post('/api/auth/forgot-password', { email })
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (email) {
-          resolve();
-        } else {
-          reject(new Error('Email is required'));
-        }
-      }, 1500);
-    });
+    await apiClient.post('/api/auth/forgot-password', { email });
   },
 
   resetPassword: async (password: string):Promise<void> => {
-    // Replace with: return axios.post('/api/auth/reset-password', { password })
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (password) {
-          resolve();
-        } else {
-          reject(new Error('Password is required'));
-        }
-      }, 1500);
-    });
+    await apiClient.post('/api/auth/reset-password', { password });
   }
 };

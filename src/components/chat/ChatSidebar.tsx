@@ -41,7 +41,7 @@ export function ChatSidebar({ onNewChat }: { onNewChat: () => void }) {
                 </span>
               </div>
               <div className="opacity-0 group-hover:opacity-100 flex items-center shrink-0">
-                <button className="p-1 text-law-text-muted hover:text-law-indigo transition-colors" title="Options">
+                <button aria-label="Conversation options" className="p-1 text-law-text-muted hover:text-law-indigo transition-colors" title="Options">
                   <MoreVertical size={14} />
                 </button>
               </div>

@@ -69,6 +69,7 @@ export function DocumentWorkspace() {
         <div className="flex items-center gap-3">
           <button 
             onClick={() => navigate('/documents')}
+            aria-label="Back to Documents"
             className="p-1.5 text-law-text-muted hover:bg-slate-100 hover:text-law-text-primary rounded-lg transition-colors"
             title="Back to Documents"
           >
@@ -94,6 +95,7 @@ export function DocumentWorkspace() {
         <div className="hidden lg:flex items-center gap-2 bg-slate-100 p-1 rounded-lg border border-law-border">
           <button 
             onClick={() => { setShowViewer(!showViewer); if(!showViewer) setShowAnalysis(true); }}
+            aria-label="Toggle Document Viewer"
             className={cn("p-1.5 rounded transition-colors", showViewer ? "bg-white shadow-sm text-law-indigo" : "text-law-text-muted hover:text-law-text-primary")}
             title="Toggle Viewer"
           >
@@ -101,6 +103,7 @@ export function DocumentWorkspace() {
           </button>
           <button 
             onClick={() => { setShowAnalysis(!showAnalysis); if(!showAnalysis) setShowViewer(true); }}
+            aria-label="Toggle Analysis Panel"
             className={cn("p-1.5 rounded transition-colors", showAnalysis ? "bg-white shadow-sm text-law-indigo" : "text-law-text-muted hover:text-law-text-primary")}
             title="Toggle Analysis"
           >

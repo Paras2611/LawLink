@@ -61,7 +61,7 @@ export function DocumentUploader({ onFileSelect, className }: DocumentUploaderPr
     <div className={cn("w-full", className)}>
       <div 
         className={cn(
-          "border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center transition-all bg-white cursor-pointer",
+          "border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center transition-all bg-white cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-law-indigo",
           isDragging ? "border-law-indigo bg-indigo-50/50" : "border-law-border hover:border-law-indigo/50 hover:bg-slate-50",
           error && "border-rose-300 bg-rose-50"
         )}
@@ -69,6 +69,15 @@ export function DocumentUploader({ onFileSelect, className }: DocumentUploaderPr
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            fileInputRef.current?.click();
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label="Upload legal document, drag and drop or click to browse"
       >
         <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4 text-law-indigo">
           <UploadCloud size={32} />

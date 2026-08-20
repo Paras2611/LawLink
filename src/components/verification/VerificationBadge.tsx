@@ -13,7 +13,7 @@ export function VerificationBadge({ status, className, showLabel = true }: Verif
   const config = {
     verified: {
       icon: CheckCircle2,
-      label: 'Verified',
+      label: 'AI Verified',
       colors: 'bg-emerald-50 text-emerald-700 border-emerald-200',
       iconColor: 'text-emerald-600'
     },

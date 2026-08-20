@@ -14,7 +14,7 @@ export const mockChatHistory = [
   {
     id: 'msg-2',
     role: 'assistant',
-    content: 'The principles for granting bail in non-bailable offences are primarily governed by Section 437 of the Bharatiya Nagarik Suraksha Sanhita, 2023 (formerly Section 437 of the Code of Criminal Procedure, 1973).\n\nHere is a detailed breakdown of the legal position.',
+    content: '[DEMO SYSTEM] This is a mock AI response generated based on your query. In a production environment, this would hit the LawLink backend API to stream a verified legal response.\n\nThe principles for granting bail in non-bailable offences are primarily governed by Section 437 of the Bharatiya Nagarik Suraksha Sanhita, 2023 (formerly Section 437 of the Code of Criminal Procedure, 1973).\n\nHere is a detailed breakdown of the legal position.',
     timestamp: '10:01 AM',
     aiData: {
       answer: 'Bail in non-bailable offences is a matter of judicial discretion, not an absolute right. The court considers various factors including the nature and gravity of the charge, severity of punishment, danger of the accused absconding, character and behavior of the accused, and reasonable apprehension of witnesses being tampered with.',

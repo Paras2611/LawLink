@@ -7,7 +7,7 @@ export function VerificationBadge({ status, className }: { status: 'verified' | 
     return (
       <div className={cn("inline-flex items-center gap-1.5 px-2 py-1 rounded bg-green-50 text-green-700 border border-green-200 text-xs font-medium", className)}>
         <ShieldCheck size={14} />
-        <span>Verified Sources</span>
+        <span>AI Supported</span>
       </div>
     );
   }

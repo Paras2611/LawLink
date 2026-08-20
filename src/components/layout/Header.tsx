@@ -27,6 +27,7 @@ export function Header({ onMenuClick, onContextClick }: HeaderProps) {
       <div className="flex items-center gap-4 flex-1">
         <button 
           onClick={onMenuClick}
+          aria-label="Toggle mobile menu"
           className="md:hidden p-2 -ml-2 text-law-text-secondary hover:text-law-text-primary rounded-md hover:bg-slate-50 transition-colors"
         >
           <Menu size={20} />
@@ -51,24 +52,25 @@ export function Header({ onMenuClick, onContextClick }: HeaderProps) {
         </div>
 
         {/* Mobile Search Icon */}
-        <button className="md:hidden p-2 text-law-text-secondary hover:text-law-text-primary rounded-md hover:bg-slate-50 transition-colors">
+        <button aria-label="Search" className="md:hidden p-2 text-law-text-secondary hover:text-law-text-primary rounded-md hover:bg-slate-50 transition-colors">
           <Search size={18} />
         </button>
 
         <div className="h-6 w-px bg-law-border hidden md:block mx-1"></div>
 
-        <button className="hidden sm:block p-2 text-law-text-secondary hover:text-law-text-primary rounded-md hover:bg-slate-50 transition-colors" title="Language">
+        <button aria-label="Language options" className="hidden sm:block p-2 text-law-text-secondary hover:text-law-text-primary rounded-md hover:bg-slate-50 transition-colors" title="Language">
           <Globe size={18} />
         </button>
-        <button className="hidden sm:block p-2 text-law-text-secondary hover:text-law-text-primary rounded-md hover:bg-slate-50 transition-colors" title="Theme">
+        <button aria-label="Toggle theme" className="hidden sm:block p-2 text-law-text-secondary hover:text-law-text-primary rounded-md hover:bg-slate-50 transition-colors" title="Theme">
           <Moon size={18} />
         </button>
-        <button className="relative p-2 text-law-text-secondary hover:text-law-text-primary rounded-md hover:bg-slate-50 transition-colors" title="Notifications">
+        <button aria-label="Notifications" className="relative p-2 text-law-text-secondary hover:text-law-text-primary rounded-md hover:bg-slate-50 transition-colors" title="Notifications">
           <Bell size={18} />
           <span className="absolute top-2 right-2 w-2 h-2 bg-law-critical rounded-full border-2 border-law-card"></span>
         </button>
         <button 
           onClick={onContextClick}
+          aria-label="Toggle context panel"
           className="p-2 text-law-text-secondary hover:text-law-text-primary rounded-md hover:bg-slate-50 transition-colors" 
           title="Toggle Context Panel"
         >
@@ -77,7 +79,7 @@ export function Header({ onMenuClick, onContextClick }: HeaderProps) {
 
         <div className="h-6 w-px bg-law-border mx-1"></div>
 
-        <button className="flex items-center justify-center w-8 h-8 rounded-full bg-law-deep-navy text-white text-xs font-bold shrink-0 hover:ring-2 hover:ring-law-indigo hover:ring-offset-2 transition-all">
+        <button aria-label="User profile" className="flex items-center justify-center w-8 h-8 rounded-full bg-law-deep-navy text-white text-xs font-bold shrink-0 hover:ring-2 hover:ring-law-indigo hover:ring-offset-2 transition-all">
           PP
         </button>
       </div>
