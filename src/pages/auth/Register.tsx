@@ -1,93 +1,131 @@
-import { useState } from 'react';
-import { Mail, Lock, User, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { cn } from '@/src/lib/utils';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthLayout } from '../../components/auth/AuthLayout';
+import { Input } from '../../components/ui/Input';
+import { PasswordInput } from '../../components/ui/PasswordInput';
+import { Button } from '../../components/ui/Button';
+import { Checkbox } from '../../components/ui/Checkbox';
+import { authService } from '../../lib/auth/authService';
+import { useAuth } from '../../contexts/AuthContext';
+import { AlertCircle } from 'lucide-react';
 
 export function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [agreed, setAgreed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !password) {
+    setError('');
+    
+    if (!name || !email || !password || !confirmPassword) {
       setError('Please fill in all fields.');
       return;
     }
-    console.log('Register attempt:', { name, email, password });
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    if (!agreed) {
+      setError('You must agree to the Terms and Conditions.');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { user, token } = await authService.register(name, email, password);
+      login(user, token);
+      navigate('/');
+    } catch (err: any) {
+      setError(err.message || 'Registration failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-sm bg-white border border-slate-200 p-8 rounded-lg shadow-sm">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-slate-950 tracking-tight">LAWLINK</h2>
-          <p className="text-slate-500 mt-2">Create your account</p>
+    <AuthLayout 
+      title="Create your account" 
+      subtitle="Join LawLink for professional legal research"
+    >
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {error && (
+          <div className="p-3 text-sm bg-law-critical/10 border border-law-critical/20 text-law-critical rounded-md flex items-start gap-2">
+            <AlertCircle size={16} className="mt-0.5 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        <Input
+          label="Full name"
+          type="text"
+          autoComplete="name"
+          required
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          disabled={isLoading}
+        />
+
+        <Input
+          label="Email address"
+          type="email"
+          autoComplete="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={isLoading}
+        />
+
+        <PasswordInput
+          label="Password"
+          autoComplete="new-password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          disabled={isLoading}
+        />
+
+        <PasswordInput
+          label="Confirm password"
+          autoComplete="new-password"
+          required
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          disabled={isLoading}
+        />
+
+        <div className="py-2">
+          <Checkbox 
+            label={
+              <span>I agree to the <a href="#" className="text-law-indigo hover:underline">Terms of Service</a> and <a href="#" className="text-law-indigo hover:underline">Privacy Policy</a>.</span>
+            } 
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+            disabled={isLoading}
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">Full Name</label>
-            <div className="relative">
-              <User className="absolute left-3 top-2.5 text-slate-400" size={16} />
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className={cn(
-                  "w-full pl-9 pr-3 py-2 border rounded-md text-sm outline-none transition-colors",
-                  error && !name ? "border-red-300 focus:border-red-500" : "border-slate-200 focus:border-slate-400"
-                )}
-                placeholder="John Doe"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">Email</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-2.5 text-slate-400" size={16} />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={cn(
-                  "w-full pl-9 pr-3 py-2 border rounded-md text-sm outline-none transition-colors",
-                  error && !email ? "border-red-300 focus:border-red-500" : "border-slate-200 focus:border-slate-400"
-                )}
-                placeholder="name@firm.com"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-2.5 text-slate-400" size={16} />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={cn(
-                  "w-full pl-9 pr-3 py-2 border rounded-md text-sm outline-none transition-colors",
-                  error && !password ? "border-red-300 focus:border-red-500" : "border-slate-200 focus:border-slate-400"
-                )}
-                placeholder="••••••••"
-              />
-            </div>
-          </div>
+        <div>
+          <Button type="submit" className="w-full" isLoading={isLoading}>
+            Create account
+          </Button>
+        </div>
+      </form>
 
-          {error && <p className="text-xs text-red-600">{error}</p>}
-
-          <button type="submit" className="w-full flex items-center justify-center gap-2 bg-slate-950 text-white py-2 rounded-md text-sm font-medium hover:bg-slate-900 transition-colors">
-            Create Account <ArrowRight size={16} />
-          </button>
-        </form>
-
-        <p className="text-center text-xs text-slate-500 mt-6">
-          Already have an account?{' '}
-          <Link to="/auth/login" className="text-slate-900 font-medium hover:underline">Sign In</Link>
-        </p>
+      <div className="mt-6 text-center text-sm">
+        <span className="text-law-text-secondary">Already have an account? </span>
+        <Link to="/login" className="font-semibold text-law-indigo hover:text-law-navy transition-colors">
+          Sign in
+        </Link>
       </div>
-    </div>
+    </AuthLayout>
   );
 }

@@ -1,59 +1,131 @@
-import { useState } from 'react';
-import { Search as SearchIcon, Filter, Book, ExternalLink } from 'lucide-react';
-import { VerificationBadge } from '../components/ui/VerificationBadge';
+import React, { useState, useEffect } from 'react';
+import { SearchBar } from '../components/search/SearchBar';
+import { SearchTabs } from '../components/search/SearchTabs';
+import { FilterPanel } from '../components/search/FilterPanel';
+import { SearchResultCard } from '../components/search/SearchResultCard';
+import { SortDropdown } from '../components/search/SortDropdown';
+import { Pagination } from '../components/search/Pagination';
+import { SearchSkeleton } from '../components/search/SearchSkeleton';
+import { EmptySearchState } from '../components/search/EmptySearchState';
+import { executeSearch } from '../lib/search/searchService';
+import { SearchResult, SearchFilters } from '../lib/search/types';
+import { Filter } from 'lucide-react';
 
 export function LegalSearch() {
   const [query, setQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('all');
+  const [sort, setSort] = useState('relevance');
+  const [filters, setFilters] = useState<SearchFilters>({
+    domain: [],
+    state: [],
+    court: [],
+    jurisdiction: [],
+    documentType: []
+  });
   
-  const mockResults = [
-    { id: 1, title: 'Article 21 - Constitution of India', type: 'Statute', snippet: 'Protection of life and personal liberty. No person shall be deprived of his life or personal liberty except according to procedure established by law.', verified: true },
-    { id: 2, title: 'Section 43A - Information Technology Act, 2000', type: 'Statute', snippet: 'Compensation for failure to protect data. Where a body corporate, possessing, dealing or handling any sensitive personal data or information in a computer resource which it owns, controls or operates, is negligent in implementing and maintaining reasonable security practices and procedures...', verified: true },
-  ];
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState(true); // Load initially
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+  const fetchResults = async () => {
+    setIsLoading(true);
+    try {
+      const response = await executeSearch(query, activeTab, filters, sort, page);
+      setResults(response.results);
+      setTotalPages(Math.ceil(response.total / 10) || 1);
+    } catch (error) {
+      console.error("Search error", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchResults();
+  }, [activeTab, sort, filters, page]); // Re-fetch when these change
+
+  const handleSearch = () => {
+    setPage(1);
+    fetchResults();
+  };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 md:p-6">
-      <h1 className="text-xl font-semibold text-slate-950 mb-6">Legal Search</h1>
-      
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
-        <div className="relative flex-1">
-          <SearchIcon className="absolute left-3 top-3.5 text-slate-400" size={18} />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search statutes, regulations, and acts..."
-            className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-slate-900 text-sm shadow-sm"
-          />
-        </div>
-        <div className="flex gap-2">
-          <select className="px-3 py-3 bg-white border border-slate-200 rounded-md text-sm outline-none shadow-sm">
-            <option>All Jurisdictions</option>
-            <option>Central (Union)</option>
-            <option>State (Maharashtra)</option>
-            <option>State (Delhi)</option>
-            <option>State (Karnataka)</option>
-          </select>
-          <button className="flex items-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-md text-sm hover:bg-slate-50 transition-colors shadow-sm">
-            <Filter size={16} /> Filters
-          </button>
+    <div className="h-full flex flex-col bg-slate-50 overflow-hidden">
+      {/* Search Header */}
+      <div className="bg-white border-b border-law-border pt-6 sm:pt-8 px-4 sm:px-8 z-10 shrink-0">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold text-law-text-primary mb-2">Legal Research Database</h1>
+            <p className="text-sm text-law-text-secondary">Search verified Indian laws, judgments, and regulations.</p>
+          </div>
+          
+          <div className="mb-6">
+            <SearchBar 
+              value={query} 
+              onChange={setQuery} 
+              onSearch={handleSearch} 
+              isLoading={isLoading} 
+            />
+          </div>
+
+          <SearchTabs activeTab={activeTab} onChange={(t) => { setActiveTab(t); setPage(1); }} />
         </div>
       </div>
 
-      <div className="space-y-4">
-        {mockResults.map(res => (
-          <div key={res.id} className="bg-white p-5 border border-slate-200 rounded-lg shadow-sm hover:border-slate-300 transition-colors cursor-pointer group">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <Book size={16} className="text-slate-400" />
-                <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">{res.type}</span>
-                {res.verified && <VerificationBadge status="verified" />}
-              </div>
-              <ExternalLink size={16} className="text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-            <h3 className="text-lg font-medium text-slate-900 mb-2">{res.title}</h3>
-            <p className="text-sm text-slate-600 line-clamp-3 leading-relaxed">{res.snippet}</p>
+      {/* Main Content */}
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <div className="max-w-6xl mx-auto flex gap-6 lg:gap-8">
+          
+          {/* Desktop Filters */}
+          <div className="hidden lg:block w-[280px] shrink-0">
+            <FilterPanel filters={filters} setFilters={setFilters} />
           </div>
-        ))}
+
+          {/* Mobile Filters Drawer */}
+          {isMobileFilterOpen && (
+            <div className="lg:hidden fixed inset-0 z-50 flex">
+              <div className="absolute inset-0 bg-law-deep-navy/20 backdrop-blur-sm" onClick={() => setIsMobileFilterOpen(false)} />
+              <div className="relative w-[85%] max-w-[320px] h-full shadow-2xl">
+                <FilterPanel filters={filters} setFilters={setFilters} isMobile onClose={() => setIsMobileFilterOpen(false)} />
+              </div>
+            </div>
+          )}
+
+          {/* Results Area */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={() => setIsMobileFilterOpen(true)}
+                  className="lg:hidden flex items-center gap-2 px-3 py-1.5 bg-white border border-law-border rounded-lg text-sm font-medium text-law-text-primary"
+                >
+                  <Filter size={16} className="text-law-indigo" />
+                  Filters
+                </button>
+                <h2 className="text-sm font-semibold text-law-text-secondary">
+                  {isLoading ? 'Searching...' : `${results.length} results found`}
+                </h2>
+              </div>
+              <SortDropdown value={sort} onChange={setSort} />
+            </div>
+
+            {isLoading ? (
+              <SearchSkeleton />
+            ) : results.length === 0 ? (
+              <EmptySearchState query={query} />
+            ) : (
+              <div className="space-y-4">
+                {results.map(result => (
+                  <SearchResultCard key={result.id} result={result} />
+                ))}
+                
+                <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

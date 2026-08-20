@@ -10,13 +10,20 @@ import { Dashboard } from './pages/Dashboard';
 import { Chat } from './pages/Chat';
 import { LegalSearch } from './pages/LegalSearch';
 import { CaseSearch } from './pages/CaseSearch';
+import { CaseDetail } from './pages/CaseDetail';
 import { Documents } from './pages/Documents';
+import { DocumentWorkspace } from './pages/DocumentWorkspace';
 import { SavedResearch } from './pages/SavedResearch';
 import { History } from './pages/History';
 import { Settings } from './pages/Settings';
 import { Profile } from './pages/Profile';
+import { EvidenceDemo } from './pages/EvidenceDemo';
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
+import { ForgotPassword } from './pages/auth/ForgotPassword';
+import { ResetPassword } from './pages/auth/ResetPassword';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 const routeTitles: Record<string, string> = {
   '/': 'Dashboard',
@@ -28,13 +35,15 @@ const routeTitles: Record<string, string> = {
   '/history': 'History',
   '/settings': 'Settings',
   '/profile': 'Profile',
-  '/auth/login': 'Login',
-  '/auth/register': 'Register',
+  '/login': 'Login',
+  '/register': 'Register',
+  '/forgot-password': 'Forgot Password',
+  '/reset-password': 'Reset Password',
 };
 
 function AppContent() {
   const location = useLocation();
-  const isAuthRoute = location.pathname.startsWith('/auth');
+  const isAuthRoute = ['/login', '/register', '/forgot-password', '/reset-password'].includes(location.pathname);
 
   useEffect(() => {
     const pageTitle = routeTitles[location.pathname];
@@ -44,8 +53,10 @@ function AppContent() {
   if (isAuthRoute) {
     return (
       <Routes>
-        <Route path="/auth/login" element={<Login />} />
-        <Route path="/auth/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     );
   }
@@ -53,15 +64,18 @@ function AppContent() {
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/search" element={<LegalSearch />} />
-        <Route path="/cases" element={<CaseSearch />} />
-        <Route path="/documents" element={<Documents />} />
-        <Route path="/saved" element={<SavedResearch />} />
-        <Route path="/history" element={<History />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+        <Route path="/search" element={<ProtectedRoute><LegalSearch /></ProtectedRoute>} />
+        <Route path="/cases" element={<ProtectedRoute><CaseSearch /></ProtectedRoute>} />
+        <Route path="/cases/:id" element={<ProtectedRoute><CaseDetail /></ProtectedRoute>} />
+        <Route path="/verification" element={<ProtectedRoute><EvidenceDemo /></ProtectedRoute>} />
+        <Route path="/documents" element={<ProtectedRoute><Documents /></ProtectedRoute>} />
+        <Route path="/documents/:id" element={<ProtectedRoute><DocumentWorkspace /></ProtectedRoute>} />
+        <Route path="/saved" element={<ProtectedRoute><SavedResearch /></ProtectedRoute>} />
+        <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       </Routes>
     </Layout>
   );
@@ -70,7 +84,9 @@ function AppContent() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

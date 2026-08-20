@@ -1,24 +1,58 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, MessageSquareText, Search, BookOpen, FileText, Bookmark, History, Settings, User, LogOut, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { 
+  LayoutDashboard, MessageSquareText, Search, BookOpen, FileText, Bookmark, History, 
+  Settings, User, LogOut, ChevronLeft, ChevronRight, X, HelpCircle,
+  Gavel, Scale, Landmark, Users, Briefcase, ShoppingCart, Laptop, ScrollText, HardHat, Building2
+} from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/src/lib/utils';
+import { useAuth } from '../../contexts/AuthContext';
 
-const navItems = [
+const mainNav = [
   { name: 'Dashboard', path: '/', icon: LayoutDashboard },
   { name: 'Ask LawLink', path: '/chat', icon: MessageSquareText },
   { name: 'Legal Search', path: '/search', icon: Search },
   { name: 'Case Search', path: '/cases', icon: BookOpen },
+  { name: 'Evidence Demo', path: '/verification', icon: FileText },
   { name: 'Documents', path: '/documents', icon: FileText },
   { name: 'Saved Research', path: '/saved', icon: Bookmark },
   { name: 'History', path: '/history', icon: History },
 ];
 
+const legalCategories = [
+  { name: 'Criminal Law', icon: Gavel },
+  { name: 'Civil Law', icon: Scale },
+  { name: 'Property Law', icon: Landmark },
+  { name: 'Family Law', icon: Users },
+  { name: 'Contract Law', icon: Briefcase },
+  { name: 'Consumer Law', icon: ShoppingCart },
+  { name: 'Cyber Law', icon: Laptop },
+  { name: 'Constitutional Law', icon: ScrollText },
+  { name: 'Labour Law', icon: HardHat },
+  { name: 'Corporate Law', icon: Building2 },
+];
+
+const bottomNav = [
+  { name: 'Profile', path: '/profile', icon: User },
+  { name: 'Settings', path: '/settings', icon: Settings },
+  { name: 'Help', path: '/help', icon: HelpCircle },
+];
+
 export function Sidebar({ isMobileOpen, closeMobile }: { isMobileOpen?: boolean; closeMobile?: () => void }) {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleLinkClick = () => {
     if (closeMobile) closeMobile();
+  };
+
+  const isHiddenText = !isMobileOpen && collapsed;
+
+  const handleLogout = () => {
+    logout();
+    handleLinkClick();
+    navigate('/login');
   };
 
   return (
@@ -26,64 +60,99 @@ export function Sidebar({ isMobileOpen, closeMobile }: { isMobileOpen?: boolean;
       {/* Mobile Overlay */}
       {isMobileOpen && (
         <div 
-          className="fixed inset-0 bg-slate-900/50 z-40 md:hidden transition-opacity"
+          className="fixed inset-0 bg-law-deep-navy/80 backdrop-blur-sm z-40 md:hidden transition-opacity"
           onClick={closeMobile}
         />
       )}
       
       <div className={cn(
-        "h-screen bg-slate-950 text-slate-400 flex flex-col transition-all duration-300 ease-in-out border-r border-slate-900 z-50",
+        "h-[100dvh] bg-law-deep-navy text-law-text-muted flex flex-col transition-all duration-300 ease-in-out border-r border-law-deep-navy shadow-2xl md:shadow-none z-50",
         "fixed md:relative top-0 left-0 bottom-0",
-        isMobileOpen ? "translate-x-0 w-64" : "-translate-x-full md:translate-x-0",
-        !isMobileOpen && collapsed ? "md:w-20" : "md:w-60"
+        isMobileOpen ? "translate-x-0 w-72" : "-translate-x-full md:translate-x-0",
+        !isMobileOpen && collapsed ? "md:w-20" : "md:w-64"
       )}>
-        <div className="p-4 md:p-6 flex items-center justify-between border-b border-slate-900">
-          <span className={cn("text-lg font-bold text-white tracking-widest", (!isMobileOpen && collapsed) && "hidden")}>LAWLINK</span>
-          <button onClick={() => setCollapsed(!collapsed)} className="hidden md:block p-1 text-slate-500 hover:text-white rounded">
+        {/* Logo Area */}
+        <div className="h-16 flex items-center justify-between px-4 md:px-6 shrink-0 bg-law-deep-navy border-b border-white/5">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-law-indigo rounded-lg flex items-center justify-center shrink-0 shadow-lg shadow-law-indigo/20">
+              <Scale size={18} className="text-white" />
+            </div>
+            <span className={cn("text-lg font-bold text-white tracking-widest", isHiddenText && "hidden")}>LAWLINK</span>
+          </div>
+          <button onClick={() => setCollapsed(!collapsed)} className="hidden md:flex p-1.5 text-law-text-muted hover:text-white rounded-md hover:bg-white/5 transition-colors">
             {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
           </button>
-          <button onClick={closeMobile} className="md:hidden p-1 text-slate-500 hover:text-white rounded">
+          <button onClick={closeMobile} className="md:hidden p-1.5 text-law-text-muted hover:text-white rounded-md hover:bg-white/5 transition-colors">
             <X size={20} />
           </button>
         </div>
 
-        <nav className="flex-1 px-3 space-y-1 mt-6 overflow-y-auto">
-          {navItems.map((item) => (
-            <NavLink
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto py-6 px-3 custom-scrollbar flex flex-col gap-8">
+          
+          {/* Main Navigation */}
+          <nav className="space-y-1">
+            {!isHiddenText && <p className="px-3 text-xs font-semibold uppercase tracking-wider text-law-text-muted/50 mb-3">Main Menu</p>}
+            {mainNav.map((item) => (
+              <NavLink
+                key={item.name}
+                to={item.path}
+                onClick={handleLinkClick}
+                title={isHiddenText ? item.name : undefined}
+                className={({ isActive }) =>
+                  cn(
+                    "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group",
+                    isActive ? "bg-law-navy text-white" : "hover:bg-white/5 hover:text-white"
+                  )
+                }
+              >
+                <item.icon size={18} className={cn("shrink-0 transition-colors", "group-hover:text-law-indigo")} />
+                <span className={cn(isHiddenText && "hidden")}>{item.name}</span>
+              </NavLink>
+            ))}
+          </nav>
+
+          {/* Legal Categories */}
+          <nav className="space-y-1">
+            {!isHiddenText && <p className="px-3 text-xs font-semibold uppercase tracking-wider text-law-text-muted/50 mb-3">Categories</p>}
+            {legalCategories.map((item) => (
+              <button
+                key={item.name}
+                onClick={handleLinkClick}
+                title={isHiddenText ? item.name : undefined}
+                className={cn(
+                  "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 group",
+                  "text-law-text-muted hover:bg-white/5 hover:text-white text-left"
+                )}
+              >
+                <item.icon size={18} className="shrink-0 opacity-50 group-hover:opacity-100 group-hover:text-law-indigo transition-all" />
+                <span className={cn(isHiddenText && "hidden truncate")}>{item.name}</span>
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        {/* Bottom Navigation */}
+        <div className="p-3 border-t border-white/5 space-y-1 bg-law-deep-navy shrink-0">
+          {bottomNav.map((item) => (
+            <NavLink 
               key={item.name}
-              to={item.path}
-              onClick={handleLinkClick}
-              className={({ isActive }) =>
-                cn(
-                  "flex items-center gap-3 p-2.5 rounded-md text-sm font-medium transition-all duration-200",
-                  isActive ? "bg-slate-900 text-white" : "hover:bg-slate-900 hover:text-white"
-                )
-              }
+              to={item.path} 
+              onClick={handleLinkClick} 
+              title={isHiddenText ? item.name : undefined}
+              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-law-text-muted hover:text-white hover:bg-white/5 rounded-lg transition-all duration-200 group"
             >
-              <item.icon size={18} className="shrink-0" />
-              <span className={cn((!isMobileOpen && collapsed) && "hidden")}>{item.name}</span>
+              <item.icon size={18} className="shrink-0 group-hover:text-law-indigo transition-colors" />
+              <span className={cn(isHiddenText && "hidden")}>{item.name}</span>
             </NavLink>
           ))}
-        </nav>
-
-        <div className="p-4 border-t border-slate-900 space-y-1">
-          <NavLink to="/settings" onClick={handleLinkClick} className="flex items-center gap-3 p-2.5 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-900 rounded-md transition-all duration-200">
-            <Settings size={18} className="shrink-0" />
-            <span className={cn((!isMobileOpen && collapsed) && "hidden")}>Settings</span>
-          </NavLink>
-          <NavLink to="/profile" onClick={handleLinkClick} className="flex items-center gap-3 p-2.5 text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-900 rounded-md transition-all duration-200">
-            <User size={18} className="shrink-0" />
-            <span className={cn((!isMobileOpen && collapsed) && "hidden")}>Profile</span>
-          </NavLink>
           <button 
-            onClick={() => {
-              handleLinkClick();
-              navigate('/auth/login');
-            }}
-            className="w-full flex items-center gap-3 p-2.5 text-sm font-medium text-red-500 hover:bg-red-950/50 hover:text-red-400 rounded-md transition-all duration-200"
+            onClick={handleLogout}
+            title={isHiddenText ? "Logout" : undefined}
+            className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-law-critical hover:bg-law-critical/10 hover:text-red-400 rounded-lg transition-all duration-200"
           >
             <LogOut size={18} className="shrink-0" />
-            <span className={cn((!isMobileOpen && collapsed) && "hidden")}>Logout</span>
+            <span className={cn(isHiddenText && "hidden")}>Logout</span>
           </button>
         </div>
       </div>

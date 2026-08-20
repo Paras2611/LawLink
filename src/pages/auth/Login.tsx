@@ -1,76 +1,103 @@
-import { useState } from 'react';
-import { Mail, Lock, ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { cn } from '@/src/lib/utils';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthLayout } from '../../components/auth/AuthLayout';
+import { Input } from '../../components/ui/Input';
+import { PasswordInput } from '../../components/ui/PasswordInput';
+import { Button } from '../../components/ui/Button';
+import { Checkbox } from '../../components/ui/Checkbox';
+import { authService } from '../../lib/auth/authService';
+import { useAuth } from '../../contexts/AuthContext';
+import { AlertCircle } from 'lucide-react';
 
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [remember, setRemember] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    
     if (!email || !password) {
-      setError('Please fill in all fields.');
+      setError('Please enter both email and password.');
       return;
     }
-    console.log('Login attempt:', { email, password });
+
+    setIsLoading(true);
+    try {
+      const { user, token } = await authService.login(email, password);
+      login(user, token);
+      navigate('/');
+    } catch (err: any) {
+      setError(err.message || 'Invalid email or password.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-sm bg-white border border-slate-200 p-8 rounded-lg shadow-sm">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-slate-950 tracking-tight">LAWLINK</h2>
-          <p className="text-slate-500 mt-2">Sign in to your account</p>
+    <AuthLayout 
+      title="Sign in to your account" 
+      subtitle="Access your intelligent legal workspace"
+    >
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {error && (
+          <div className="p-3 text-sm bg-law-critical/10 border border-law-critical/20 text-law-critical rounded-md flex items-start gap-2">
+            <AlertCircle size={16} className="mt-0.5 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        <Input
+          label="Email address"
+          type="email"
+          autoComplete="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={isLoading}
+        />
+
+        <PasswordInput
+          label="Password"
+          autoComplete="current-password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          disabled={isLoading}
+        />
+
+        <div className="flex items-center justify-between">
+          <Checkbox 
+            label="Remember me" 
+            checked={remember}
+            onChange={(e) => setRemember(e.target.checked)}
+            disabled={isLoading}
+          />
+          <div className="text-sm">
+            <Link to="/forgot-password" className="font-semibold text-law-indigo hover:text-law-navy transition-colors">
+              Forgot password?
+            </Link>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">Email</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-2.5 text-slate-400" size={16} />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={cn(
-                  "w-full pl-9 pr-3 py-2 border rounded-md text-sm outline-none transition-colors",
-                  error && !email ? "border-red-300 focus:border-red-500" : "border-slate-200 focus:border-slate-400"
-                )}
-                placeholder="name@firm.com"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-3 top-2.5 text-slate-400" size={16} />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={cn(
-                  "w-full pl-9 pr-3 py-2 border rounded-md text-sm outline-none transition-colors",
-                  error && !password ? "border-red-300 focus:border-red-500" : "border-slate-200 focus:border-slate-400"
-                )}
-                placeholder="••••••••"
-              />
-            </div>
-          </div>
+        <div>
+          <Button type="submit" className="w-full" isLoading={isLoading}>
+            Sign in
+          </Button>
+        </div>
+      </form>
 
-          {error && <p className="text-xs text-red-600">{error}</p>}
-
-          <button type="submit" className="w-full flex items-center justify-center gap-2 bg-slate-950 text-white py-2 rounded-md text-sm font-medium hover:bg-slate-900 transition-colors">
-            Sign In <ArrowRight size={16} />
-          </button>
-        </form>
-
-        <p className="text-center text-xs text-slate-500 mt-6">
-          Don't have an account?{' '}
-          <Link to="/auth/register" className="text-slate-900 font-medium hover:underline">Register</Link>
-        </p>
+      <div className="mt-6 text-center text-sm">
+        <span className="text-law-text-secondary">Don't have an account? </span>
+        <Link to="/register" className="font-semibold text-law-indigo hover:text-law-navy transition-colors">
+          Register now
+        </Link>
       </div>
-    </div>
+    </AuthLayout>
   );
 }

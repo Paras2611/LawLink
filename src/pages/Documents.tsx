@@ -1,72 +1,67 @@
-import { DocumentUploader } from '../components/ui/DocumentUploader';
-import { FileText, MoreVertical, Search as SearchIcon } from 'lucide-react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { DocumentUploader } from '../components/documents/DocumentUploader';
+import { DocumentProgress } from '../components/documents/DocumentProgress';
+import { uploadDocument } from '../lib/documents/documentService';
+import { Document } from '../lib/documents/types';
+import { FileText } from 'lucide-react';
 
 export function Documents() {
-  const mockDocs = [
-    { id: 1, name: 'Employment_Agreement_Template_2026.pdf', size: '2.4 MB', date: 'Aug 19, 2026', status: 'Analyzed' },
-    { id: 2, name: 'Defendant_Deposition_Transcript_Final.pdf', size: '4.1 MB', date: 'Aug 18, 2026', status: 'Analyzed' },
-    { id: 3, name: 'Motion_to_Dismiss_Draft_v2.pdf', size: '1.2 MB', date: 'Aug 15, 2026', status: 'Pending' },
-  ];
+  const navigate = useNavigate();
+  const [isUploading, setIsUploading] = useState(false);
+  const [status, setStatus] = useState<Document['status']>('idle');
+
+  const handleFileSelect = async (file: File) => {
+    setIsUploading(true);
+    setStatus('uploading');
+    
+    try {
+      // Simulate the processing steps for the demo
+      setTimeout(() => setStatus('extracting'), 1000);
+      setTimeout(() => setStatus('analyzing'), 2500);
+      setTimeout(() => setStatus('finding_law'), 4000);
+      setTimeout(() => setStatus('verifying'), 5500);
+      
+      const docId = await uploadDocument(file);
+      
+      setStatus('complete');
+      setTimeout(() => {
+        navigate(`/documents/${docId}`);
+      }, 1000);
+      
+    } catch (error) {
+      console.error('Upload failed:', error);
+      setStatus('failed');
+    }
+  };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 md:p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-semibold text-slate-950">Documents</h1>
-      </div>
-      
-      <div className="mb-10">
-        <DocumentUploader />
-      </div>
-
-      <div>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
-          <h2 className="text-base font-medium text-slate-900">Your Documents</h2>
-          <div className="relative w-full sm:w-auto">
-            <SearchIcon className="absolute left-3 top-2.5 text-slate-400" size={16} />
-            <input 
-              type="text" 
-              placeholder="Search files..."
-              className="w-full sm:w-64 pl-9 pr-3 py-2 bg-white border border-slate-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-slate-900"
-            />
+    <div className="h-full flex flex-col bg-slate-50 overflow-hidden">
+      <div className="bg-white border-b border-law-border pt-6 sm:pt-8 px-4 sm:px-8 z-10 shrink-0 pb-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-law-text-primary">Analyze a Legal Document</h1>
+            <p className="text-sm text-law-text-secondary mt-2 max-w-2xl">
+              Upload a legal document and LawLink will identify important clauses, relevant legal provisions, potential issues and supporting authorities.
+            </p>
           </div>
         </div>
-        
-        <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-x-auto">
-          <table className="w-full text-left text-sm min-w-[600px]">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-500">
-              <tr>
-                <th className="px-6 py-4 font-medium">Name</th>
-                <th className="px-6 py-4 font-medium">Size</th>
-                <th className="px-6 py-4 font-medium">Date Modified</th>
-                <th className="px-6 py-4 font-medium">Status</th>
-                <th className="px-6 py-4"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {mockDocs.map(doc => (
-                <tr key={doc.id} className="hover:bg-slate-50 transition-colors group cursor-pointer">
-                  <td className="px-6 py-4 flex items-center gap-3">
-                    <FileText size={18} className="text-slate-400" />
-                    <span className="font-medium text-slate-900">{doc.name}</span>
-                  </td>
-                  <td className="px-6 py-4 text-slate-500">{doc.size}</td>
-                  <td className="px-6 py-4 text-slate-500">{doc.date}</td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                      doc.status === 'Analyzed' ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-700'
-                    }`}>
-                      {doc.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <button className="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-md hover:bg-slate-200/50">
-                      <MoreVertical size={16} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 flex items-center justify-center">
+        <div className="w-full max-w-xl">
+          {isUploading ? (
+            <div className="space-y-6">
+              <div className="flex items-center justify-center mb-8">
+                 <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center text-law-indigo animate-pulse">
+                   <FileText size={32} />
+                 </div>
+              </div>
+              <DocumentProgress status={status} />
+            </div>
+          ) : (
+            <DocumentUploader onFileSelect={handleFileSelect} />
+          )}
         </div>
       </div>
     </div>

@@ -1,97 +1,122 @@
-import { useState } from 'react';
-import { Trash2, Filter, ExternalLink } from 'lucide-react';
-import { cn } from '@/src/lib/utils';
-
-type Tab = 'cases' | 'sections' | 'documents';
+import React, { useState, useEffect } from 'react';
+import { Bookmark } from 'lucide-react';
+import { fetchSavedResearch, deleteSavedItem, renameHistoryItem } from '../lib/research/researchService';
+import { SavedItem, SavedItemType } from '../lib/research/types';
+import { SavedResearchCard } from '../components/research/SavedResearchCard';
+import { ResearchSearch } from '../components/research/ResearchSearch';
+import { ResearchTabs } from '../components/research/ResearchTabs';
+import { EmptyResearchState } from '../components/research/EmptyResearchState';
+import { ResearchSkeleton } from '../components/research/ResearchSkeleton';
 
 export function SavedResearch() {
-  const [activeTab, setActiveTab] = useState<Tab>('cases');
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [items, setItems] = useState<SavedItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState<SavedItemType | 'all'>('all');
+  const [isLoading, setIsLoading] = useState(true);
 
-  const tabs: { id: Tab; label: string }[] = [
-    { id: 'cases', label: 'Cases' },
+  const tabs: { id: SavedItemType | 'all', label: string }[] = [
+    { id: 'all', label: 'All Saved' },
+    { id: 'answers', label: 'Answers' },
     { id: 'sections', label: 'Sections' },
+    { id: 'cases', label: 'Cases' },
     { id: 'documents', label: 'Documents' },
+    { id: 'sources', label: 'Sources' }
   ];
 
-  const toggleSelect = (id: string) => {
-    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  const loadSavedItems = async () => {
+    setIsLoading(true);
+    try {
+      const data = await fetchSavedResearch(searchQuery, activeTab);
+      setItems(data);
+    } catch (error) {
+      console.error("Failed to load saved research", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const mockData = {
-    cases: [
-      { id: 'c1', title: 'Kesavananda Bharati v. State of Kerala', savedOn: 'Aug 19, 2026' },
-      { id: 'c2', title: 'Justice K.S. Puttaswamy v. Union of India', savedOn: 'Aug 18, 2026' },
-    ],
-    sections: [
-      { id: 's1', title: 'Article 21 - Constitution of India', savedOn: 'Aug 19, 2026' },
-    ],
-    documents: [
-      { id: 'd1', title: 'Employment_Agreement_Template_2026.pdf', savedOn: 'Aug 17, 2026' },
-    ]
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadSavedItems();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery, activeTab]);
+
+  const handleDelete = async (id: string) => {
+    await deleteSavedItem(id);
+    setItems(items.filter(item => item.id !== id));
   };
 
-  const currentData = mockData[activeTab];
+  const handleRename = async (id: string, newTitle: string) => {
+    await renameHistoryItem(id, newTitle); // Mocking with history rename
+    setItems(items.map(item => item.id === id ? { ...item, title: newTitle } : item));
+  };
+
+  const handleArchive = async (id: string) => {
+    await deleteSavedItem(id); // Mocking archive as delete
+    setItems(items.filter(item => item.id !== id));
+  };
+
+  const handleShare = (id: string) => {
+    console.log("Sharing item", id);
+    // In a real app, open a share modal
+  };
 
   return (
-    <div className="max-w-5xl mx-auto py-8 md:py-12 px-2 md:px-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 md:mb-8 gap-4">
-        <h1 className="text-xl md:text-2xl font-semibold text-slate-950">Saved Research</h1>
-        <div className="flex flex-wrap gap-2">
-          <button className="flex items-center gap-2 px-3 md:px-4 py-2 border border-slate-200 rounded-md text-xs md:text-sm text-slate-600 hover:bg-slate-50 bg-white shadow-sm">
-            <Filter size={16} /> Filter
-          </button>
-          {selectedIds.length > 0 && (
-            <button className="flex items-center gap-2 px-3 md:px-4 py-2 bg-red-50 border border-red-200 rounded-md text-xs md:text-sm text-red-600 hover:bg-red-100 shadow-sm transition-colors">
-              <Trash2 size={16} /> Delete ({selectedIds.length})
-            </button>
+    <div className="h-full flex flex-col bg-slate-50 overflow-hidden">
+      <div className="bg-white border-b border-law-border pt-6 sm:pt-8 px-4 sm:px-8 z-10 shrink-0 pb-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+            <div>
+              <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-law-indigo mb-4">
+                <Bookmark size={20} />
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-law-text-primary">Saved Research</h1>
+              <p className="text-sm text-law-text-secondary mt-1">Organize and revisit your saved cases, documents, and answers.</p>
+            </div>
+            <div className="w-full md:w-80">
+              <ResearchSearch 
+                value={searchQuery} 
+                onChange={setSearchQuery} 
+                placeholder="Search saved items..." 
+              />
+            </div>
+          </div>
+          
+          <ResearchTabs 
+            tabs={tabs} 
+            activeTab={activeTab} 
+            onChange={setActiveTab} 
+          />
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <div className="max-w-5xl mx-auto">
+          {isLoading ? (
+            <ResearchSkeleton />
+          ) : items.length === 0 ? (
+            <EmptyResearchState 
+              title={searchQuery ? "No matching saved items" : "No saved research yet"}
+              description={searchQuery ? "Try adjusting your search terms or filters." : "When you find useful cases, sections, or AI answers, save them to build your personal library."}
+              actionLabel={searchQuery ? undefined : "Go to Chat"}
+              actionRoute={searchQuery ? undefined : "/chat"}
+            />
+          ) : (
+            <div className="space-y-4">
+              {items.map(item => (
+                <SavedResearchCard 
+                  key={item.id} 
+                  item={item} 
+                  onDelete={handleDelete}
+                  onRename={handleRename}
+                  onArchive={handleArchive}
+                  onShare={handleShare}
+                />
+              ))}
+            </div>
           )}
         </div>
-      </div>
-
-      <div className="border-b border-slate-200 mb-6 md:mb-8 overflow-x-auto">
-        <div className="flex gap-6 md:gap-8 min-w-max">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => { setActiveTab(tab.id); setSelectedIds([]); }}
-              className={cn(
-                "pb-3 md:pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
-                activeTab === tab.id ? "border-slate-900 text-slate-950" : "border-transparent text-slate-500 hover:text-slate-900"
-              )}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
-        {currentData.length > 0 ? (
-          <div className="divide-y divide-slate-100">
-            {currentData.map(item => (
-              <div key={item.id} className="p-4 md:p-5 flex items-center gap-4 hover:bg-slate-50 transition-colors">
-                <input 
-                  type="checkbox" 
-                  checked={selectedIds.includes(item.id)}
-                  onChange={() => toggleSelect(item.id)}
-                  className="w-4 h-4 rounded border-slate-300 text-slate-900 focus:ring-slate-900 cursor-pointer"
-                />
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-medium text-slate-900 truncate">{item.title}</h3>
-                  <p className="text-xs text-slate-500 mt-1">Saved on {item.savedOn}</p>
-                </div>
-                <button className="text-slate-400 hover:text-slate-900 p-2 rounded-md hover:bg-slate-200/50 transition-colors">
-                  <ExternalLink size={16} />
-                </button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="p-6 md:p-8 text-center text-sm md:text-base text-slate-500">
-            No saved {activeTab} yet. Start your research to save items here.
-          </div>
-        )}
       </div>
     </div>
   );

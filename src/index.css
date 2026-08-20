@@ -1,1 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+
+  --color-law-bg: #F7F8FA;
+  --color-law-deep-navy: #0B1220;
+  --color-law-navy: #172554;
+  --color-law-indigo: #4F46E5;
+  --color-law-verified: #059669;
+  --color-law-warning: #D97706;
+  --color-law-critical: #DC2626;
+  --color-law-text-primary: #111827;
+  --color-law-text-secondary: #475569;
+  --color-law-text-muted: #64748B;
+  --color-law-border: #E2E8F0;
+  --color-law-card: #FFFFFF;
+}
+
+body {
+  @apply bg-law-bg text-law-text-primary antialiased;
+}
