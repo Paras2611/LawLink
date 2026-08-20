@@ -87,6 +87,14 @@ export function Sidebar({ isMobileOpen, closeMobile }: { isMobileOpen?: boolean;
           </button>
         </div>
 
+        {/* Demo Mode Indicator */}
+        <div className="px-3 py-3 border-b border-white/5 bg-amber-500/10 shrink-0">
+          <div className={cn("flex items-center gap-2 px-2 py-1.5 rounded bg-amber-500/20 text-amber-500", isHiddenText && "justify-center px-0")} title="Using frontend demo data. Connect the LawLink API for live data.">
+            <HelpCircle size={16} className="shrink-0" />
+            <span className={cn("text-[10px] font-bold uppercase tracking-widest", isHiddenText && "hidden")}>Demo Mode</span>
+          </div>
+        </div>
+
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto py-6 px-3 custom-scrollbar flex flex-col gap-8">
           

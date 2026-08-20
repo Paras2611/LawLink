@@ -4,20 +4,20 @@ export const mockCases: CaseDocument[] = [
   {
     id: 'case-demo-1',
     isDemo: true,
-    title: '[DEMO CASE] Sharma & Co. v. Tech Solutions Pvt Ltd',
-    court: 'Delhi High Court',
+    title: 'Demo Case A (Sharma & Co. v. Tech Solutions Pvt Ltd)',
+    court: 'Demo High Court',
     date: '2023-11-15',
-    caseNumber: 'CS(COMM) 456/2023',
-    jurisdiction: 'Commercial Appellate',
+    caseNumber: 'DEMO(COMM) 456/2023',
+    jurisdiction: 'Demo Appellate',
     caseType: 'Commercial Suit',
-    provisions: ['Section 9, Arbitration Act', 'Order XXXIX Rule 1 CPC'],
-    summary: 'A dispute regarding interim injunction in a software licensing agreement containing an arbitration clause.',
+    provisions: ['Demo Provision 1', 'Demo Provision 2'],
+    summary: 'A demo dispute regarding interim injunction in a software licensing agreement containing an arbitration clause.',
     relevance: 95,
     verified: true,
-    facts: 'The Plaintiff (Sharma & Co.) entered into a software development and licensing agreement with the Defendant (Tech Solutions). The Defendant allegedly terminated the agreement wrongfully and withheld source code. Plaintiff sought an interim injunction to prevent the Defendant from selling the software to third parties pending arbitration.',
+    facts: 'The Plaintiff (Sharma & Co.) entered into a demo software development and licensing agreement with the Defendant (Tech Solutions). The Defendant allegedly terminated the agreement wrongfully and withheld source code. Plaintiff sought an interim injunction to prevent the Defendant from selling the software to third parties pending arbitration.',
     issues: [
       'Whether the dispute falls within the ambit of the arbitration clause?',
-      'Whether an interim injunction can be granted under Section 9 of the Arbitration and Conciliation Act when the primary relief is for specific performance?'
+      'Whether an interim injunction can be granted under demo provisions when the primary relief is for specific performance?'
     ],
     arguments: {
       petitioner: [
@@ -33,12 +33,12 @@ export const mockCases: CaseDocument[] = [
     courtReasoning: 'The Court reasoned that while specific performance of a commercial contract is generally not granted if damages are an adequate remedy, the unique nature of the proprietary software justified preserving the status quo. The balance of convenience favored the Plaintiff, provided they demonstrate bona fide intent by depositing the outstanding dues.',
     outcome: 'Conditional Interim Injunction granted in favor of the Plaintiff. Parties directed to commence arbitration within 30 days.',
     citedCases: [
-      { id: 'c1', title: 'Adhunik Steels Ltd. v. Orissa Manganese and Minerals', citation: '(2007) 7 SCC 125', relation: 'cited' },
-      { id: 'c2', title: 'O.N.G.C. v. Saw Pipes Ltd', citation: '(2003) 5 SCC 705', relation: 'cited' }
+      { id: 'c1', title: 'Demo Related Case X', citation: 'DEMO CITATION 1', relation: 'cited' },
+      { id: 'c2', title: 'Demo Related Case Y', citation: 'DEMO CITATION 2', relation: 'cited' }
     ],
     citingCases: [],
     timeline: [
-      { id: 't1', stage: 'Filing', date: '2023-09-10', status: 'completed', description: 'Suit filed under Commercial Courts Act.' },
+      { id: 't1', stage: 'Filing', date: '2023-09-10', status: 'completed', description: 'Suit filed under Demo Act.' },
       { id: 't2', stage: 'Hearing', date: '2023-10-05', status: 'completed', description: 'Arguments heard on interim relief.' },
       { id: 't3', stage: 'Interim Order', date: '2023-11-15', status: 'completed', description: 'Conditional injunction granted.' },
       { id: 't4', stage: 'Judgment', status: 'upcoming', description: 'Pending final disposal or arbitration outcome.' }
@@ -48,28 +48,28 @@ export const mockCases: CaseDocument[] = [
   {
     id: 'case-demo-2',
     isDemo: true,
-    title: '[DEMO CASE] R.K. Builders v. State of Maharashtra',
-    court: 'Supreme Court of India',
+    title: 'Demo Case B (R.K. Builders v. State of Maharashtra)',
+    court: 'Demo Supreme Court',
     date: '2022-04-20',
-    caseNumber: 'Civil Appeal No. 1122 of 2022',
-    jurisdiction: 'Appellate',
+    caseNumber: 'Demo Appeal No. 1122 of 2022',
+    jurisdiction: 'Demo Appellate',
     caseType: 'Civil Appeal',
-    provisions: ['Article 136, Constitution of India', 'Section 73, Contract Act'],
-    summary: 'Appeal regarding the calculation of damages in a state infrastructure contract delayed by force majeure events.',
+    provisions: ['Demo Provision 3', 'Demo Provision 4'],
+    summary: 'Demo appeal regarding the calculation of damages in a state infrastructure contract delayed by force majeure events.',
     relevance: 88,
     verified: true
   },
   {
     id: 'case-demo-3',
     isDemo: true,
-    title: '[DEMO CASE] CyberGuard Inc. v. Union of India',
-    court: 'Bombay High Court',
+    title: 'Demo Case C (CyberGuard Inc. v. Union of India)',
+    court: 'Demo High Court',
     date: '2024-01-10',
-    caseNumber: 'WP(C) 89/2024',
+    caseNumber: 'DEMO(C) 89/2024',
     jurisdiction: 'Writ Jurisdiction',
     caseType: 'Writ Petition',
-    provisions: ['Article 226, Constitution of India', 'IT Rules 2021'],
-    summary: 'Challenge to blocking orders issued under the Information Technology Rules without prior hearing.',
+    provisions: ['Demo Constitutional Article', 'Demo IT Rules'],
+    summary: 'Challenge to blocking orders issued under Demo Rules without prior hearing.',
     relevance: 82,
     verified: true
   }

@@ -3,36 +3,36 @@ import { LegalSource, LegalClaim, Citation } from './types';
 export const mockSources: LegalSource[] = [
   {
     id: 'src-1',
-    title: 'The Indian Contract Act, 1872',
+    title: '[DEMO ACT] Demo Contract Act, 2026',
     sourceType: 'act',
-    date: '1872-09-01',
-    jurisdiction: 'India',
+    date: '2026-09-01',
+    jurisdiction: 'Demo Jurisdiction',
     verificationStatus: 'verified'
   },
   {
     id: 'src-2',
-    title: 'Section 73',
+    title: '[DEMO SECTION] Section 73',
     sourceType: 'section',
     section: '73',
-    jurisdiction: 'India',
+    jurisdiction: 'Demo Jurisdiction',
     verificationStatus: 'verified'
   },
   {
     id: 'src-3',
-    title: 'Hadley v. Baxendale',
+    title: '[DEMO JUDGMENT] Demo Case A v. Demo Case B',
     sourceType: 'judgment',
-    court: 'Court of Exchequer',
+    court: 'Demo Exchequer',
     date: '1854-02-23',
-    jurisdiction: 'United Kingdom (Common Law)',
+    jurisdiction: 'Demo Common Law',
     verificationStatus: 'partially_verified'
   },
   {
     id: 'src-4',
-    title: 'State of Maharashtra v. Reliance Industries',
+    title: '[DEMO JUDGMENT] State of Demo v. Demo Industries',
     sourceType: 'judgment',
-    court: 'Supreme Court of India',
+    court: 'Demo Supreme Court',
     date: '2020-05-15',
-    jurisdiction: 'India',
+    jurisdiction: 'Demo Jurisdiction',
     verificationStatus: 'conflicting'
   }
 ];

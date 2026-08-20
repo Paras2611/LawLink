@@ -30,15 +30,15 @@ export const mockChatHistory = [
       relevantCases: [
         {
           id: 'case-1',
-          title: 'Gurbaksh Singh Sibbia v. State of Punjab',
-          citation: '(1980) 2 SCC 565',
+          title: 'Demo Bail Case 1 v. State',
+          citation: '[DEMO CITATION 1]',
           relevance: 'Established foundational principles for bail and anticipatory bail, emphasizing that "bail is the rule and jail is an exception".',
           verified: true
         },
         {
           id: 'case-2',
-          title: 'P. Chidambaram v. Central Bureau of Investigation',
-          citation: '(2019) 10 SCC 437',
+          title: 'Demo Triple Test Case v. Agency',
+          citation: '[DEMO CITATION 2]',
           relevance: 'Reiterated the triple test for bail: flight risk, tampering with evidence, and influencing witnesses.',
           verified: true
         }
