@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 import { Dashboard } from './pages/Dashboard';
@@ -17,9 +18,28 @@ import { Profile } from './pages/Profile';
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 
+const routeTitles: Record<string, string> = {
+  '/': 'Dashboard',
+  '/chat': 'Ask LawLink',
+  '/search': 'Legal Search',
+  '/cases': 'Case Search',
+  '/documents': 'Documents',
+  '/saved': 'Saved Research',
+  '/history': 'History',
+  '/settings': 'Settings',
+  '/profile': 'Profile',
+  '/auth/login': 'Login',
+  '/auth/register': 'Register',
+};
+
 function AppContent() {
   const location = useLocation();
   const isAuthRoute = location.pathname.startsWith('/auth');
+
+  useEffect(() => {
+    const pageTitle = routeTitles[location.pathname];
+    document.title = pageTitle ? `${pageTitle} - Law Link` : 'Law Link';
+  }, [location.pathname]);
 
   if (isAuthRoute) {
     return (
